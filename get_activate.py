@@ -69,7 +69,7 @@ def main_worker(args):
     predicate(data.val_loader, feature_extractor, output_path)
 
 def predicate(data_loader, feature_extractor, output_path=None):
-    batch_time = AverageMeter()
+    batch_time = AverageMeter("Time", ":6.3f", write_val=False)
     model = feature_extractor.model
     outputs_dict = dict()
 
