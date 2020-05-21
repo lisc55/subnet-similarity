@@ -54,13 +54,13 @@ def main_worker(args):
         pretrained(args, model)
 
     data = get_dataset(args)
-	output_path = os.path.dirname(args.pretrained) + f"_{activations}"
+    output_path = os.path.dirname(args.pretrained) + f"_{activations}"
 
      # setup feature extractor
     feature_extractor = FeatureExtractor(model)
 
-	target_layers = feature_extractor.parse_default_layers()
-	target_types = feature_extractor.parse_type("relu")
+    target_layers = feature_extractor.parse_default_layers()
+    target_types = feature_extractor.parse_type("relu")
 
     feature_extractor.append_target_layers(target_layers, target_types)
 
