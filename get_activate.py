@@ -23,7 +23,7 @@ from utils.net_utils import (
     LabelSmoothing,
 )
 from utils.schedulers import get_policy
-
+from utils.feature_extractor import FeatureExtractor
 
 from args import args
 import importlib
