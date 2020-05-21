@@ -31,6 +31,7 @@ import importlib
 import data
 import models
 
+import numpy as np
 
 def main():
     print(args)
