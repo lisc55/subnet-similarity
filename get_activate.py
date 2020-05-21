@@ -88,7 +88,7 @@ def predicate(data_loader, feature_extractor, output_path=None):
             # synchronize so that everything is calculated
             torch.cuda.synchronize()
 
-            # print(feature_extractor.target_outputs)
+            print(feature_extractor.target_outputs)
             for target_layer, target_output in feature_extractor.target_outputs.items():
                 if target_layer in outputs_dict:
                     outputs_dict[target_layer].append(target_output.data.numpy())
