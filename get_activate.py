@@ -53,7 +53,7 @@ def main_worker(args):
         pretrained(args, model)
 
     data = get_dataset(args)
-    output_path = os.path.dirname(args.pretrained) + f"_{activations}"
+    output_path = args.pretrained + "_activations"
 
      # setup feature extractor
     feature_extractor = FeatureExtractor(model)
