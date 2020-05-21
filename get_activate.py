@@ -41,7 +41,6 @@ def main():
 
 def main_worker(args):
     args.gpu = None
-    train, validate, modifier = get_trainer(args)
 
     if args.gpu is not None:
         print("Use GPU: {} for training".format(args.gpu))
