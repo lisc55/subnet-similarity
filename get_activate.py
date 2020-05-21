@@ -63,8 +63,8 @@ def main_worker(args):
 
     feature_extractor.append_target_layers(target_layers, target_types)
 
-    logger.info('module:\n' + pprint.pformat(feature_extractor.module_dict))
-    logger.info('target_layers:\n' + pprint.pformat(feature_extractor.target_outputs.keys()))
+    print(feature_extractor.module_dict)
+    print(feature_extractor.target_outputs.keys())
 
     predicate(data.val_loader, feature_extractor, output_path)
 
