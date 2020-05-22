@@ -58,13 +58,13 @@ def main_worker(args):
 
      # setup feature extractor
     feature_extractor = FeatureExtractor(model)
-
+    print(model.module)
     target_layers = feature_extractor.parse_default_layers()
     target_types = feature_extractor.parse_type("relu")
 
     feature_extractor.append_target_layers(target_layers, target_types)
 
-    print(feature_extractor.module_dict)
+    # print(feature_extractor.module_dict)
     print(feature_extractor.target_outputs.keys())
 
     predicate(data.val_loader, feature_extractor, output_path)
@@ -105,13 +105,17 @@ def predicate(data_loader, feature_extractor, output_path=None):
                     batch_ind, len(data_loader), batch_time=batch_time))
 
     if output_path is not None:
-        def _squeeze_dict(d):
-            for key, val in d.items():
-                d[key] = np.concatenate(val, 0)
-            return d
+        # def _squeeze_dict(d):
+        #     for key, val in d.items():
+        #         d[key] = np.concatenate(val, 0)
+        #     return d
 
-        outputs_dict = _squeeze_dict(outputs_dict)
-        np.savez_compressed(output_path, **outputs_dict)
+        # outputs_dict = _squeeze_dict(outputs_dict)
+        # np.savez_compressed(output_path, **outputs_dict)
+        
+        for key, val in outputs_dict.items():
+            np.save(output_path + '_' + key, np.concatenate(val, 0))
+            print(key, 'saved')
 
 
 def set_gpu(args, model):
