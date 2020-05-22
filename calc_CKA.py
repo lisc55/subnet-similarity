@@ -1,3 +1,6 @@
+import argparse
+import os
+
 import numpy as np
 
 
@@ -146,3 +149,19 @@ def feature_space_linear_cka(features_x, features_y, debiased=False):
             squared_norm_y, squared_norm_y, n))
 
     return dot_product_similarity / (normalization_x * normalization_y)
+
+
+def main():
+	parser = argparse.ArgumentParser("calc CKA of two activation spaces")
+
+	parser.add_argument("-c", "--conv", help="calc for conv layers (default for fc layers)", action="store_true")
+	parser.add_argument("-x", "--X_path", help="the path to activations X")
+	parser.add_argument("-y", "--Y_path", help="the path to activations Y")
+
+	args = parser.parse_args()
+
+	
+
+
+if __name__ == "__main__":
+	main()
