@@ -190,7 +190,7 @@ def main():
     )
 
 def write_result_to_csv(**kwargs):
-    results = pathlib.Path("runs") / "results.csv"
+    results = pathlib.Path("runs") / "cka_results.csv"
 
     if not results.exists():
         results.write_text(
