@@ -182,7 +182,7 @@ def main():
 
 	cka = feature_space_linear_cka(f_X, f_Y)
 
-	print(cka)
+	print(f"{cka:.05f}")
 
 	write_result_to_csv(
         X_path=args.X_path,
