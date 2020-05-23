@@ -57,7 +57,7 @@ def main_worker(args):
     output_path = args.pretrained + "_activations"
 
      # setup feature extractor
-    feature_extractor = FeatureExtractor(model)
+    feature_extractor = FeatureExtractor(model.module)
     print(model.module)
     target_layers = feature_extractor.parse_default_layers()
     target_types = feature_extractor.parse_type("relu")
