@@ -169,11 +169,11 @@ def main():
 	print(f"Y shape: {Y.shape}")
 
 	if args.conv:
-		num_datapoints, h, w, channels = X.shape
-		f_X = X.reshape((num_datapoints*h*w, channels))
+		num_datapoints, channels, h, w = X.shape
+		f_X = X.transpose((0,2,3,1)).reshape((num_datapoints*h*w, channels))
 
-		num_datapoints, h, w, channels = Y.shape
-		f_Y = Y.reshape((num_datapoints*h*w, channels))
+		num_datapoints, channels, h, w = Y.shape
+		f_Y = Y.transpose((0,2,3,1)).reshape((num_datapoints*h*w, channels))
 
 		print(f_X.shape, f_Y.shape)
 	else:
