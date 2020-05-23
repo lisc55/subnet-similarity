@@ -159,8 +159,25 @@ def main():
 	parser.add_argument("-y", "--Y_path", help="the path to activations Y")
 
 	args = parser.parse_args()
+	print(args)
 
+	X = np.load(args.X_path)
+	Y = np.load(args.Y_path)
+	print(f"X shape: {X.shape}")
+	print(f"Y shape: {Y.shape}")
+
+	num_datapoints, h, w, channels = X.shape
+	f_X = X.reshape((num_datapoints*h*w, channels))
+
+	num_datapoints, h, w, channels = Y.shape
+	f_Y = Y.reshape((num_datapoints*h*w, channels))
+
+	print(f_X.shape, f_Y.shape)
+
+	cka = feature_space_linear_cka(f_X, f_Y)
+	print(cka)
 	
+
 
 
 if __name__ == "__main__":
