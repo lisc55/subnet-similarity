@@ -204,7 +204,14 @@ def write_result_to_csv(**kwargs):
     now = time.strftime("%m-%d-%y_%H:%M:%S")
 
     with open(results, "a+") as f:
-        f.write(f"{now}, {X_path}, {Y_path}, {cka:.05f}\n")
+        f.write(
+			(
+                "{now}, "
+                "{X_path}, "
+                "{Y_path}, "
+                "{cka}\n"
+            ).format(now=now, **kwargs)
+		)
 
 if __name__ == "__main__":
 	main()
