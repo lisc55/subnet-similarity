@@ -1,5 +1,6 @@
 import argparse
 import os
+import pathlib
 
 import numpy as np
 
@@ -166,19 +167,43 @@ def main():
 	print(f"X shape: {X.shape}")
 	print(f"Y shape: {Y.shape}")
 
-	num_datapoints, h, w, channels = X.shape
-	f_X = X.reshape((num_datapoints*h*w, channels))
+	if args.conv:
+		num_datapoints, h, w, channels = X.shape
+		f_X = X.reshape((num_datapoints*h*w, channels))
 
-	num_datapoints, h, w, channels = Y.shape
-	f_Y = Y.reshape((num_datapoints*h*w, channels))
+		num_datapoints, h, w, channels = Y.shape
+		f_Y = Y.reshape((num_datapoints*h*w, channels))
 
-	print(f_X.shape, f_Y.shape)
+		print(f_X.shape, f_Y.shape)
+	else:
+		f_X = X
+		f_Y = Y
 
 	cka = feature_space_linear_cka(f_X, f_Y)
+
 	print(cka)
-	
 
+	write_result_to_csv(
+        X_path=args.X_path,
+        Y_path=args.Y_path,
+		cka=cka
+    )
 
+def write_result_to_csv(**kwargs):
+    results = pathlib.Path("runs") / "results.csv"
+
+    if not results.exists():
+        results.write_text(
+            "Date Finished, "
+            "X_path, "
+            "Y_path, "
+            "CKA\n"
+        )
+
+    now = time.strftime("%m-%d-%y_%H:%M:%S")
+
+    with open(results, "a+") as f:
+        f.write(f"{now}, {X_path}, {Y_path}, {cka:.05f}\n")
 
 if __name__ == "__main__":
 	main()
