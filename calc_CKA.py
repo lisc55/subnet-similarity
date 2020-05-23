@@ -156,7 +156,7 @@ def feature_space_linear_cka(features_x, features_y, debiased=False):
 def main():
 	parser = argparse.ArgumentParser("calc CKA of two activation spaces")
 
-	parser.add_argument("-c", "--conv", help="calc for conv layers (default for fc layers)", action="store_true")
+	# parser.add_argument("-c", "--conv", help="calc for conv layers (default for fc layers)", action="store_true")
 	parser.add_argument("-x", "--X_path", help="the path to activations X")
 	parser.add_argument("-y", "--Y_path", help="the path to activations Y")
 
@@ -168,18 +168,22 @@ def main():
 	print(f"X shape: {X.shape}")
 	print(f"Y shape: {Y.shape}")
 
-	if args.conv:
+	if X.shape[2] == 1 and X.shape[3] == 1 and Y.shape[2] == 1 and Y.shape[3] == 1:
+		num_datapoints, channels, h, w = X.shape
+		f_X = X.reshape((X.shape[0], X.shape[1]))
+
+		num_datapoints, channels, h, w = Y.shape
+		f_Y = Y.reshape((Y.shape[0], Y.shape[1]))
+		
+	else:
 		num_datapoints, channels, h, w = X.shape
 		f_X = X.transpose((0,2,3,1)).reshape((num_datapoints*h*w, channels))
 
 		num_datapoints, channels, h, w = Y.shape
 		f_Y = Y.transpose((0,2,3,1)).reshape((num_datapoints*h*w, channels))
 
-		print(f_X.shape, f_Y.shape)
-	else:
-		f_X = X
-		f_Y = Y
 
+	print(f_X.shape, f_Y.shape)
 	cka = feature_space_linear_cka(f_X, f_Y)
 
 	print(f"{cka:.05f}")
