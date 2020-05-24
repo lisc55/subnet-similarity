@@ -16,7 +16,8 @@ from utils.conv_type import FixedSubnetConv, SampleSubnetConv
 from utils.logging import AverageMeter, ProgressMeter
 from utils.net_utils import (
     set_model_prune_rate,
-    freeze_model_weights,
+    freeze_model_subnet,
+    unfreeze_model_weights,
     save_checkpoint,
     get_lr,
     LabelSmoothing,
