@@ -56,13 +56,13 @@ class SubnetConv(nn.Conv2d):
         return x
 
 
-# learning weights, scores won't change
-class WeightConv(SubnetConv):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+# # learning weights, scores won't change
+# class WeightConv(SubnetConv):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
 
-    def forward(self, x):
-        return super(SubnetConv, self).forward(x)
+#     def forward(self, x):
+#         return super(SubnetConv, self).forward(x)
 
 
 """

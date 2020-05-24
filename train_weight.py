@@ -32,7 +32,6 @@ import models
 
 
 def main():
-    args.conv_type = "WeightConv"
     print(args)
 
     if args.seed is not None:
@@ -284,22 +283,26 @@ def get_model(args):
     model = models.__dict__[args.arch]()
 
     # applying sparsity to the network
-    if (
-        args.conv_type != "DenseConv"
-        and args.conv_type != "SampleSubnetConv"
-        and args.conv_type != "ContinuousSparseConv"
-    ):
-        if args.prune_rate < 0:
-            raise ValueError("Need to set a positive prune rate")
+    # if (
+    #     args.conv_type != "DenseConv"
+    #     and args.conv_type != "SampleSubnetConv"
+    #     and args.conv_type != "ContinuousSparseConv"
+    # ):
+    #     if args.prune_rate < 0:
+    #         raise ValueError("Need to set a positive prune rate")
 
-        set_model_prune_rate(model, prune_rate=args.prune_rate)
-        print(
-            f"=> Rough estimate model params {sum(int(p.numel() * (1-args.prune_rate)) for n, p in model.named_parameters() if not n.endswith('scores'))}"
-        )
+    #     set_model_prune_rate(model, prune_rate=args.prune_rate)
+    #     print(
+    #         f"=> Rough estimate model params {sum(int(p.numel() * (1-args.prune_rate)) for n, p in model.named_parameters() if not n.endswith('scores'))}"
+    #     )
 
     # # freezing the weights if we are only doing subnet training
     # if args.freeze_weights:
     #     freeze_model_weights(model)
+
+    set_model_prune_rate(model, prune_rate=0.0)
+    freeze_model_subnet(model)
+    unfreeze_model_weights(model)
 
     return model
 
