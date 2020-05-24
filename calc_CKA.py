@@ -169,10 +169,7 @@ def main():
 	print(f"Y shape: {Y.shape}")
 
 	if X.shape[2] == 1 and X.shape[3] == 1 and Y.shape[2] == 1 and Y.shape[3] == 1:
-		num_datapoints, channels, h, w = X.shape
 		f_X = X.reshape((X.shape[0], X.shape[1]))
-
-		num_datapoints, channels, h, w = Y.shape
 		f_Y = Y.reshape((Y.shape[0], Y.shape[1]))
 		
 	else:
@@ -213,7 +210,7 @@ def write_result_to_csv(**kwargs):
                 "{now}, "
                 "{X_path}, "
                 "{Y_path}, "
-                "{cka}\n"
+                "{cka:.05f}\n"
             ).format(now=now, **kwargs)
 		)
 
