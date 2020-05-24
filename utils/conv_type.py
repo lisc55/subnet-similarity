@@ -8,7 +8,12 @@ import math
 from args import args as parser_args
 
 
-DenseConv = nn.Conv2d
+# DenseConv = nn.Conv2d
+class DenseConv(nn.Conv2d):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.scores = nn.Parameter(torch.Tensor(self.weight.size()), requires_grad=False)
 
 
 class GetSubnet(autograd.Function):
