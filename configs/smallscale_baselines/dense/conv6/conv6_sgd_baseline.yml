@@ -23,4 +23,4 @@ bn_type: NonAffineBatchNorm
 
 # ===== Hardware setup ===== #
 workers: 4
-log_dir: /home/vivekr/prod/hidden-networks/runs/baseline
+# log_dir: /home/vivekr/prod/hidden-networks/runs/baseline
