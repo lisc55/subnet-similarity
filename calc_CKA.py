@@ -163,15 +163,16 @@ def main():
     parser.add_argument("--Y_seed")
     parser.add_argument("--X_trained", action="store_true")
     parser.add_argument("--Y_trained", action="store_true")
+    parser.add_argument("--init-state", action="store_true")
     parser.add_argument("--layer")
-
     args = parser.parse_args()
     print(args)
 
     X_path = args.X_seed + ("_weight_trained" if args.X_trained else "")
     Y_path = args.Y_seed + ("_weight_trained" if args.Y_trained else "")
-    X_path = "runs/conv6_usc_unsigned/seed_" + X_path + f"/prune_rate=0.7/checkpoints/model_best.pth_activations_{args.layer}.npy"
-    Y_path = "runs/conv6_usc_unsigned/seed_" + Y_path + f"/prune_rate=0.7/checkpoints/model_best.pth_activations_{args.layer}.npy"
+    state = "initial.state" if args.init_state else "model_best.pth"
+    X_path = "runs/conv6_usc_unsigned/seed_" + X_path + f"/prune_rate=0.7/checkpoints/{state}_activations_{args.layer}.npy"
+    Y_path = "runs/conv6_usc_unsigned/seed_" + Y_path + f"/prune_rate=0.7/checkpoints/{state}_activations_{args.layer}.npy"
     print(X_path, Y_path, sep='\n')
     
     X = np.load(X_path)
@@ -199,6 +200,7 @@ def main():
     write_result_to_csv(
         layer=args.layer,
         cka=cka,
+        init_state=args.init_state,
         X_trained=args.X_trained,
         Y_trained=args.Y_trained,
         X_seed=args.X_seed,
@@ -213,6 +215,7 @@ def write_result_to_csv(**kwargs):
             "Date Finished, "
             "layer, "
             "CKA, "
+            "init_state, "
             "X_trained, "
             "Y_trained, "
             "X_seed, "
@@ -227,6 +230,7 @@ def write_result_to_csv(**kwargs):
                 "{now}, "
                 "{layer}, "
                 "{cka:.05f}, "
+                "{init_state}, "
                 "{X_trained}, "
                 "{Y_trained}, "
                 "{X_seed}, "
