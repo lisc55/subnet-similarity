@@ -12,7 +12,8 @@ do
         --multigpu $GPU \
         --data dataset \
         --prune-rate 0.7 \
-        --pretrained runs/conv6_usc_unsigned/seed_${SEED}/prune_rate=0.7/checkpoints/model_best.pth
+        --pretrained runs/conv6_usc_unsigned/seed_${SEED}/prune_rate=0.7/checkpoints/model_best.pth \
+        --workers 0
 done
 
 # calc activation, subnet of weight trained
@@ -22,7 +23,8 @@ do
         --multigpu $GPU \
         --data dataset \
         --prune-rate 0.7 \
-        --pretrained runs/conv6_usc_unsigned/seed_${SEED}_weight_trained/prune_rate=0.7/checkpoints/model_best.pth
+        --pretrained runs/conv6_usc_unsigned/seed_${SEED}_weight_trained/prune_rate=0.7/checkpoints/model_best.pth \
+        --workers 0
 done
 
 # calc actiavtion, random subnet
@@ -32,7 +34,8 @@ do
         --multigpu $GPU \
         --data dataset \
         --prune-rate 0.7 \
-        --pretrained runs/conv6_usc_unsigned/seed_${SEED}/prune_rate=0.7/checkpoints/initial.state
+        --pretrained runs/conv6_usc_unsigned/seed_${SEED}/prune_rate=0.7/checkpoints/initial.state \
+        --workers 0
 done
 
 # calc CKA, subnet before and after weight train
