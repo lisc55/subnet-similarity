@@ -157,14 +157,25 @@ def main():
 	parser = argparse.ArgumentParser("calc CKA of two activation spaces")
 
 	# parser.add_argument("-c", "--conv", help="calc for conv layers (default for fc layers)", action="store_true")
-	parser.add_argument("-x", "--X_path", help="the path to activations X")
-	parser.add_argument("-y", "--Y_path", help="the path to activations Y")
+	# parser.add_argument("-x", "--X_path", help="the path to activations X")
+	# parser.add_argument("-y", "--Y_path", help="the path to activations Y")
+	parser.add_argument("--X_seed")
+	parser.add_argument("--Y_seed")
+	parser.add_argument("--X_trained", action="store_true")
+	parser.add_argument("--Y_trained", action="store_true")
+	parser.add_argument("--layer")
 
 	args = parser.parse_args()
 	print(args)
 
-	X = np.load(args.X_path)
-	Y = np.load(args.Y_path)
+	X_path = args.X_seed + ("_weight_trained" if args.X_trained else "")
+	Y_path = args.Y_seed + ("_weight_trained" if args.Y_trained else "")
+	X_path = "runs/conv6_usc_unsigned/seed_" + X_path + f"/prune_rate=0.7/checkpoints/model_best.pth_activations_{args.layer}.npy"
+	Y_path = "runs/conv6_usc_unsigned/seed_" + Y_path + f"/prune_rate=0.7/checkpoints/model_best.pth_activations_{args.layer}.npy"
+	print(X_path, Y_path, sep='\n')
+	
+	X = np.load(X_path)
+	Y = np.load(Y_path)
 	print(f"X shape: {X.shape}")
 	print(f"Y shape: {Y.shape}")
 
@@ -186,9 +197,12 @@ def main():
 	print(f"{cka:.05f}")
 
 	write_result_to_csv(
-        X_path=args.X_path,
-        Y_path=args.Y_path,
-		cka=cka
+		layer=args.layer
+        cka=cka
+		X_trained=args.X_trained,
+		Y_trained=args.Y_trained,
+        X_seed=args.X_seed,
+        Y_seed=args.Y_seed,
     )
 
 def write_result_to_csv(**kwargs):
@@ -197,9 +211,12 @@ def write_result_to_csv(**kwargs):
     if not results.exists():
         results.write_text(
             "Date Finished, "
-            "X_path, "
-            "Y_path, "
-            "CKA\n"
+            "layer, "
+            "CKA, "
+            "X_trained, "
+			"Y_trained, "
+			"X_seed, "
+			"Y_seed\n"
         )
 
     now = time.strftime("%m-%d-%y_%H:%M:%S")
@@ -208,9 +225,12 @@ def write_result_to_csv(**kwargs):
         f.write(
 			(
                 "{now}, "
-                "{X_path}, "
-                "{Y_path}, "
-                "{cka:.05f}\n"
+                "{layer}, "
+                "{cka:.05f}, "
+                "{X_trained}, "
+				"{Y_trained}, "
+				"{X_seed}, "
+				"{Y_seed}\n"
             ).format(now=now, **kwargs)
 		)
 
