@@ -30,9 +30,7 @@ for SEED in ${SEED_LIST[@]}
 do
     for LAYER in ${LAYER_LIST[@]}
     do 
-        python3 calc_CKA.py \
-            -x runs/conv6_usc_unsigned/seed_${SEED}/prune_rate=0.7/checkpoints/model_best.pth_activations_${LAYER}.npy \
-            -y runs/conv6_usc_unsigned/seed_${SEED}_weight_trained/prune_rate=0.7/checkpoints/model_best.pth_activations_${LAYER}.npy
+        python3 calc_CKA.py --X_seed $SEED --Y_seed $SEED --Y_trained --layer $LAYER
     done
 done
 
@@ -43,9 +41,7 @@ do
 	do
         for LAYER in ${LAYER_LIST[@]}
         do
-            python3 calc_CKA.py \
-                -x runs/conv6_usc_unsigned/seed_${SEED_LIST[$i]}/prune_rate=0.7/checkpoints/model_best.pth_activations_${LAYER}.npy \
-                -y runs/conv6_usc_unsigned/seed_${SEED_LIST[$j]}/prune_rate=0.7/checkpoints/model_best.pth_activations_${LAYER}.npy
+            python3 calc_CKA.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --layer $LAYER
         done
 	done
 done
@@ -57,9 +53,7 @@ do
 	do
         for LAYER in ${LAYER_LIST[@]}
         do
-            python3 calc_CKA.py \
-                -x runs/conv6_usc_unsigned/seed_${SEED_LIST[$i]}_weight_trained/prune_rate=0.7/checkpoints/model_best.pth_activations_${LAYER}.npy \
-                -y runs/conv6_usc_unsigned/seed_${SEED_LIST[$j]}_weight_trained/prune_rate=0.7/checkpoints/model_best.pth_activations_${LAYER}.npy
+            python3 calc_CKA.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --X_trained --Y_trained --layer $LAYER
         done
 	done
 done
