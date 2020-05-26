@@ -7,7 +7,7 @@ import numpy as np
 
 from utils.match_utils import find_maximal_match, find_maximal_epsilon
 
-def calc_sim(mat0, mat1, eps, sample_ndim, sample_iter):
+def calc_sim(mat0, mat1, epsilon, sample_ndim, sample_iter):
     mms_list = []
 
     for iter in range(sample_iter):
