@@ -8,15 +8,18 @@ shift
 
 SEED_LIST=(2 23 233 13 131)
 LAYER_LIST=('convs.1' 'convs.3' 'convs.6' 'convs.8' 'convs.11' 'convs.13' 'linear.1' 'linear.3')
-eps=(0.15 0.20 0.25 0.30 0.50)
+EPS_LIST=(0.15 0.20 0.25 0.30 0.50)
 
 # calc match, subnet before and after weight train
 for SEED in ${SEED_LIST[@]}
 do
     for LAYER in ${LAYER_LIST[@]}
     do 
-        python3 calc_match.py --X_seed $SEED --Y_seed $SEED --Y_trained --layer $LAYER --config $CONFIG
-    done
+		for EPS in ${EPS_LIST[@]}
+		do
+        	python3 calc_match.py --X_seed $SEED --Y_seed $SEED --Y_trained --layer $LAYER --config $CONFIG --eps $EPS
+		done
+	done
 done
 
 # calc match, subnet before weight train
@@ -26,7 +29,10 @@ do
 	do
         for LAYER in ${LAYER_LIST[@]}
         do
-            python3 calc_match.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --layer $LAYER --config $CONFIG
+			for EPS in ${EPS_LIST[@]}
+			do
+            	python3 calc_match.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --layer $LAYER --config $CONFIG --eps $EPS
+			done
         done
 	done
 done
@@ -38,7 +44,10 @@ do
 	do
         for LAYER in ${LAYER_LIST[@]}
         do
-            python3 calc_match.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --X_trained --Y_trained --layer $LAYER --config $CONFIG
+			for EPS in ${EPS_LIST[@]}
+			do
+            	python3 calc_match.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --X_trained --Y_trained --layer $LAYER --config $CONFIG --eps $EPS
+			done
         done
 	done
 done
@@ -50,7 +59,10 @@ do
 	do
         for LAYER in ${LAYER_LIST[@]}
         do
-            python3 calc_match.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --init-state --layer $LAYER --config $CONFIG
+			for EPS in ${EPS_LIST[@]}
+			do
+            	python3 calc_match.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --init-state --layer $LAYER --config $CONFIG --eps $EPS
+			done
         done
 	done
 done
