@@ -5,130 +5,24 @@ import time
 
 import numpy as np
 
-# _DEBUG = False
-_ZERO = 1e-16
+from utils.match_utils import find_maximal_match, find_maximal_epsilon
 
-def dist2plane(x, Y):
-    """
-    Calucating the distance of a vector to a plane.
-    Assume that the norm of x is large enough
-    :param X: [M,]
-    :param Y: [N2, D]
-    :return: (scalar)
-    """
-    assert x.ndim == 1
-    x_norm = np.linalg.norm(x)
-    x = x.reshape(-1, 1)
-    Y_t = np.transpose(Y)
-    if x_norm < _ZERO:
-        return 0.
-    solution = np.linalg.lstsq(Y_t, x, rcond=None)
-    dist = np.linalg.norm(np.dot(Y_t, solution[0]) - x)
-    return dist / x_norm
+def calc_sim(mat0, mat1, eps, sample_ndim, sample_iter):
+    mms_list = []
 
+    for iter in range(sample_iter):
+        sample_idx = np.random.choice(mat0.shape[1], sample_ndim, replace=False)
+        X = mat0[:, sample_idx]
+        Y = mat1[:, sample_idx]
 
-def dists2plane(X, Y):
-    """
-    Calucating the distances of a group of vectors to a plane
-    Assume norm is large enough
-    :param X: [N1, D]
-    :param Y: [N2, D]
-    :return: [N1,]
-    """
-    Y_t = np.transpose(Y)
-    X_t = np.transpose(X)
-    solution = np.linalg.lstsq(Y_t, X_t, rcond=None)
-    dist = np.linalg.norm(np.dot(Y_t, solution[0]) - X_t, axis=0)
-    norm = np.linalg.norm(X_t, axis=0)
-    return dist / norm
+        idx_X, idx_Y = find_maximal_match(X, Y, epsilon)
+        mms = float(len(idx_X) + len(idx_Y)) / (len(X) + len(Y))
+        max_epsilon = find_maximal_epsilon(X, Y)
 
+        mms_list.append(mms)
+        print('Sampling iter {}: mms = {:.05f}%, max_epsilon = {:.3f}'.format(iter, 100 * mms, max_epsilon))
 
-def remove_zeros(X):
-    """
-    Remove zero-norm vectors
-    Args:
-            X: [N, D]
-
-    Returns:
-            non-zero vectors: [N',]
-            non-zero indices: [N',]
-
-    """
-    assert X.ndim == 2, "Only support 2-D X"
-    norm_X = np.linalg.norm(X, axis=1)
-    non_zero = np.where(norm_X > _ZERO)[0]
-    return X[non_zero], non_zero
-
-
-def find_maximal_match(X, Y, eps, has_purge=False):
-    """
-    Find maximal match set between X and Y
-    Args:
-            X: [N1, D]
-            Y: [N2, D]
-            eps: scalar
-            has_purge: whether X and Y have removed zero vectors
-
-    Returns:
-            idx_X: X's match set indices
-            idx_Y: Y's match set indices
-    """
-    assert X.ndim == 2 and Y.ndim == 2, 'Check dimensions of X and Y'
-    # if _DEBUG: print('eps={:.4f}'.format(eps))
-
-    if not has_purge:
-        X, non_zero_X = remove_zeros(X)
-        Y, non_zero_Y = remove_zeros(Y)
-
-    idx_X = np.arange(X.shape[0])
-    idx_Y = np.arange(Y.shape[0])
-
-    if len(idx_X) == 0 or len(idx_Y) == 0:
-        return idx_X[[]], idx_Y[[]]
-
-    flag = True
-    while flag:
-        flag = False
-
-        # tic = time.time()
-        dist_X = dists2plane(X[idx_X], Y[idx_Y])
-        # toc = time.time()
-        # print(toc-tic)
-        remain_idx_X = idx_X[dist_X <= eps]
-
-        if len(remain_idx_X) < len(idx_X):
-            flag = True
-
-        idx_X = remain_idx_X
-        if len(idx_X) == 0:
-            idx_Y = idx_Y[[]]
-            break
-
-        # tic = time.time()
-        dist_Y = dists2plane(Y[idx_Y], X[idx_X])
-        # toc = time.time()
-        # print(toc-tic)
-        remain_idx_Y = idx_Y[dist_Y <= eps]
-
-        if len(remain_idx_Y) < len(idx_Y):
-            flag = True
-
-        idx_Y = remain_idx_Y
-        if len(idx_Y) == 0:
-            idx_X = idx_X[[]]
-            break
-
-        # if _DEBUG: print('|X|={:d}, |Y|={:d}'.format(len(idx_X), len(idx_Y)))
-
-    if not has_purge:
-        idx_X = non_zero_X[idx_X]
-        idx_Y = non_zero_Y[idx_Y]
-
-    return idx_X, idx_Y
-
-def calc_sim(X, Y, eps):
-    idx_X, idx_Y = find_maximal_match(X, Y, eps)
-    return (idx_X.shape[0] + idx_Y.shape[0]) / (X.shape[0] + Y.shape[0])
+    return np.mean(mms_list)
 
 
 def main():
@@ -145,8 +39,12 @@ def main():
     parser.add_argument("--layer")
     parser.add_argument("--config")
     parser.add_argument("--eps", type=float)
+    parser.add_argument('--ndim', dest='sample_ndim', type=int, default=10000, help="only for feature maps")
+    parser.add_argument('--iter', dest='sample_iter', type=int, default=16, help="number of samples")
     args = parser.parse_args()
     print(args)
+    sample_ndim = args.sample_ndim
+    sample_iter = args.sample_iter
 
     X_path = args.X_seed + ("_weight_trained" if args.X_trained else "")
     Y_path = args.Y_seed + ("_weight_trained" if args.Y_trained else "")
@@ -175,9 +73,9 @@ def main():
 
 
     print(f_X.shape, f_Y.shape)
-    sim = calc_sim(f_X, f_Y, args.eps)
+    sim = calc_sim(f_X, f_Y, args.eps, sample_ndim, sample_iter)
 
-    print(f"{sim:.05f}")
+    print(f"==> mms = {sim:.05f}")
 
     write_result_to_csv(
         layer=args.layer,
