@@ -7,6 +7,8 @@ import numpy as np
 
 from utils.match_utils import find_maximal_match, find_maximal_epsilon
 
+epss = [0.15, 0.20, 0.25, 0.30, 0.50]
+
 def calc_sim(mat0, mat1, epsilon, sample_ndim, sample_iter):
     mms_list = []
 
@@ -16,6 +18,7 @@ def calc_sim(mat0, mat1, epsilon, sample_ndim, sample_iter):
         Y = mat1[:, sample_idx]
 
         idx_X, idx_Y = find_maximal_match(X, Y, epsilon)
+        print(idx_X, idx_Y)
         mms = float(len(idx_X) + len(idx_Y)) / (len(X) + len(Y))
         max_epsilon = find_maximal_epsilon(X, Y)
 
@@ -38,7 +41,7 @@ def main():
     parser.add_argument("--init-state", action="store_true")
     parser.add_argument("--layer")
     parser.add_argument("--config")
-    parser.add_argument("--eps", type=float)
+    # parser.add_argument("--eps", type=float)
     parser.add_argument('--ndim', dest='sample_ndim', type=int, default=10000, help="only for feature maps")
     parser.add_argument('--iter', dest='sample_iter', type=int, default=16, help="number of samples")
     args = parser.parse_args()
@@ -73,21 +76,23 @@ def main():
 
 
     print(f_X.shape, f_Y.shape)
-    sim = calc_sim(f_X, f_Y, args.eps, sample_ndim, sample_iter)
 
-    print(f"==> mms = {sim:.05f}")
+    for eps in epss:
+        sim = calc_sim(f_X, f_Y, eps, sample_ndim, sample_iter)
 
-    write_result_to_csv(
-        layer=args.layer,
-        sim=sim,
-        eps=args.eps,
-        init_state=args.init_state,
-        X_trained=args.X_trained,
-        Y_trained=args.Y_trained,
-        X_seed=args.X_seed,
-        Y_seed=args.Y_seed,
-        config=args.config
-    )
+        print(f"==> mms = {sim:.05f}")
+
+        write_result_to_csv(
+            layer=args.layer,
+            sim=sim,
+            eps=eps,
+            init_state=args.init_state,
+            X_trained=args.X_trained,
+            Y_trained=args.Y_trained,
+            X_seed=args.X_seed,
+            Y_seed=args.Y_seed,
+            config=args.config
+        )
 
 def write_result_to_csv(**kwargs):
     results = pathlib.Path("runs") / "match_results.csv"
