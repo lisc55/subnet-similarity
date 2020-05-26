@@ -165,14 +165,15 @@ def main():
     parser.add_argument("--Y_trained", action="store_true")
     parser.add_argument("--init-state", action="store_true")
     parser.add_argument("--layer")
+    parser.add_argument("--config")
     args = parser.parse_args()
     print(args)
 
     X_path = args.X_seed + ("_weight_trained" if args.X_trained else "")
     Y_path = args.Y_seed + ("_weight_trained" if args.Y_trained else "")
     state = "initial.state" if args.init_state else "model_best.pth"
-    X_path = "runs/conv6_usc_unsigned/seed_" + X_path + f"/prune_rate=0.7/checkpoints/{state}_activations_{args.layer}.npy"
-    Y_path = "runs/conv6_usc_unsigned/seed_" + Y_path + f"/prune_rate=0.7/checkpoints/{state}_activations_{args.layer}.npy"
+    X_path = f"runs/{args.config}/seed_" + X_path + f"/prune_rate=0.7/checkpoints/{state}_activations_{args.layer}.npy"
+    Y_path = f"runs/{args.config}/seed_" + Y_path + f"/prune_rate=0.7/checkpoints/{state}_activations_{args.layer}.npy"
     print(X_path, Y_path, sep='\n')
     
     X = np.load(X_path)
@@ -205,6 +206,7 @@ def main():
         Y_trained=args.Y_trained,
         X_seed=args.X_seed,
         Y_seed=args.Y_seed,
+        config=args.config
     )
 
 def write_result_to_csv(**kwargs):
@@ -219,7 +221,8 @@ def write_result_to_csv(**kwargs):
             "X_trained, "
             "Y_trained, "
             "X_seed, "
-            "Y_seed\n"
+            "Y_seed, "
+            "config\n"
         )
 
     now = time.strftime("%m-%d-%y_%H:%M:%S")
@@ -234,7 +237,8 @@ def write_result_to_csv(**kwargs):
                 "{X_trained}, "
                 "{Y_trained}, "
                 "{X_seed}, "
-                "{Y_seed}\n"
+                "{Y_seed}, "
+                "{config}\n"
             ).format(now=now, **kwargs)
         )
 
