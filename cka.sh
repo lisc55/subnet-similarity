@@ -82,7 +82,7 @@ do
 	do
         for LAYER in ${LAYER_LIST[@]}
         do
-            python3 calc_CKA.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --init-state --layer $LAYER
+            python3 calc_CKA.py --X_seed ${SEED_LIST[$i]} --Y_seed ${SEED_LIST[$j]} --init-state --layer $LAYER --config $CONFIG
         done
 	done
 done
