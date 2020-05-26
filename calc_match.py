@@ -227,6 +227,4 @@ def write_result_to_csv(**kwargs):
         )
 
 if __name__ == "__main__":
-    X = np.random.randn(100, 10000000)
-    Y = np.random.randn(100, 10000000)
-    calc_sim(X, Y, 0.2)
+    main()
