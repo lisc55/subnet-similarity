@@ -18,7 +18,7 @@ def calc_sim(mat0, mat1, epsilon, sample_ndim, sample_iter):
         Y = mat1[:, sample_idx]
 
         idx_X, idx_Y = find_maximal_match(X, Y, epsilon)
-        print(idx_X, idx_Y)
+        # print(idx_X, idx_Y)
         mms = float(len(idx_X) + len(idx_Y)) / (len(X) + len(Y))
         max_epsilon = find_maximal_epsilon(X, Y)
 
