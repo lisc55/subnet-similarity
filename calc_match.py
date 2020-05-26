@@ -127,8 +127,8 @@ def find_maximal_match(X, Y, eps, has_purge=False):
     return idx_X, idx_Y
 
 def calc_sim(X, Y, eps):
-	idx_X, idx_Y = find_maximal_match(X, Y, eps)
-	print(idx_X, idx_Y)
+    idx_X, idx_Y = find_maximal_match(X, Y, eps)
+    return (idx_X.shape[0] + idx_Y.shape[0]) / (X.shape[0] + Y.shape[0])
 
 
 def main():
@@ -144,7 +144,7 @@ def main():
     parser.add_argument("--init-state", action="store_true")
     parser.add_argument("--layer")
     parser.add_argument("--config")
-	parser.add_argument("--eps", type=float)
+    parser.add_argument("--eps", type=float)
     args = parser.parse_args()
     print(args)
 
@@ -162,14 +162,16 @@ def main():
 
     if X.shape[2] == 1 and X.shape[3] == 1 and Y.shape[2] == 1 and Y.shape[3] == 1:
         f_X = X.reshape((X.shape[0], X.shape[1]))
+        f_X = f_X.transpose()
         f_Y = Y.reshape((Y.shape[0], Y.shape[1]))
+        f_Y = f_Y.transpose()
         
     else:
         num_datapoints, channels, h, w = X.shape
-        f_X = X.transpose((0,2,3,1)).reshape((num_datapoints*h*w, channels))
+        f_X = X.transpose((1,0,2,3)).reshape((channels, num_datapoints*h*w))
 
         num_datapoints, channels, h, w = Y.shape
-        f_Y = Y.transpose((0,2,3,1)).reshape((num_datapoints*h*w, channels))
+        f_Y = Y.transpose((1,0,2,3)).reshape((channels, num_datapoints*h*w))
 
 
     print(f_X.shape, f_Y.shape)
@@ -180,6 +182,7 @@ def main():
     write_result_to_csv(
         layer=args.layer,
         sim=sim,
+        eps=args.eps,
         init_state=args.init_state,
         X_trained=args.X_trained,
         Y_trained=args.Y_trained,
@@ -196,6 +199,7 @@ def write_result_to_csv(**kwargs):
             "Date Finished, "
             "layer, "
             "similarity, "
+            "eps, "
             "init_state, "
             "X_trained, "
             "Y_trained, "
@@ -212,6 +216,7 @@ def write_result_to_csv(**kwargs):
                 "{now}, "
                 "{layer}, "
                 "{sim:.05f}, "
+                "{eps}, "
                 "{init_state}, "
                 "{X_trained}, "
                 "{Y_trained}, "
@@ -222,4 +227,6 @@ def write_result_to_csv(**kwargs):
         )
 
 if __name__ == "__main__":
-    main()
+    X = np.random.randn(100, 10000000)
+    Y = np.random.randn(100, 10000000)
+    calc_sim(X, Y, 0.2)
