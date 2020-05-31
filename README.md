@@ -6,4 +6,4 @@
 
 by Shuchen Li, Chang Wang, Pengyun Yue
 
-Our code is based on [What's hidden in a randomly weighted neural network?](https://github.com/allenai/hidden-networks) by Vivek Ramanujan and Mitchell Wortsman. We computed some similarity metrics on the sub-networks.
+This is our project of the Machine Learning course, 2020 spring. Our code is based on [What's hidden in a randomly weighted neural network?](https://github.com/allenai/hidden-networks) by Vivek Ramanujan and Mitchell Wortsman. We computed some similarity metrics on the sub-networks.
